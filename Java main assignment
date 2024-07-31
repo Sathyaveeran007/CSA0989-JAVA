@@ -1,0 +1,75 @@
+import java.util.*;
+
+class SignalController {
+    String intersectionId;
+    int greenDuration;
+    int yellowDuration;
+    int redDuration;
+    int elapsedTime;
+
+    SignalController(String intersectionId, int green, int yellow, int red) {
+        this.intersectionId = intersectionId;
+        this.greenDuration = green;
+        this.yellowDuration = yellow;
+        this.redDuration = red;
+        this.elapsedTime = 0;
+    }
+
+    void refreshSignal() {
+        elapsedTime++;
+        if (elapsedTime % (greenDuration + yellowDuration + redDuration) < greenDuration) {
+            System.out.println(intersectionId + " Green Light");
+        } else if (elapsedTime % (greenDuration + yellowDuration + redDuration) < greenDuration + yellowDuration) {
+            System.out.println(intersectionId + " Yellow Light");
+        } else {
+            System.out.println(intersectionId + " Red Light");
+        }
+    }
+}
+
+class TrafficInfo {
+    int count;
+    int velocity;
+
+    TrafficInfo(int count, int velocity) {
+        this.count = count;
+        this.velocity = velocity;
+    }
+}
+
+class SignalManager {
+    List<SignalController> controllers;
+
+    SignalManager(List<SignalController> controllers) {
+        this.controllers = controllers;
+    }
+
+    void adjustSignals(TrafficInfo info) {
+        for (SignalController controller : controllers) {
+            if (info.count > 50) {
+                controller.greenDuration = 60;
+                controller.redDuration = 30;
+            } else {
+                controller.greenDuration = 30;
+                controller.redDuration = 60;
+            }
+            controller.refreshSignal();
+        }
+    }
+}
+
+public class TrafficControlSystem {
+    public static void main(String[] args) {
+        List<SignalController> controllers = new ArrayList<>();
+        controllers.add(new SignalController("Crossroad1", 30, 5, 60));
+        controllers.add(new SignalController("Crossroad2", 30, 5, 60));
+
+        SignalManager manager = new SignalManager(controllers);
+
+        TrafficInfo info1 = new TrafficInfo(55, 40);
+        manager.adjustSignals(info1);
+
+        TrafficInfo info2 = new TrafficInfo(30, 30);
+        manager.adjustSignals(info2);
+    }
+}￼Enter
